@@ -14,13 +14,13 @@ public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
+    @Column(unique = true)
     private String sku;
     private String name;
     private String description;
     private String department;      // e.g., FRUIT&VEG, CHILLER, FREEZER, AMBIENT
-    private String category;
-    private String subcategory;
+    private String category;        // FRUIT , VEG ,
+    private String subcategory;     // BANANAS, ORANGES, APPLES
     private BigDecimal basePrice;
     private String unit;            // KG, CASE
     private String barcode;
