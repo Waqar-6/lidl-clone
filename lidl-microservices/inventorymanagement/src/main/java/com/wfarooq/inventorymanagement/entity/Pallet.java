@@ -2,11 +2,13 @@ package com.wfarooq.inventorymanagement.entity;
 
 import com.wfarooq.inventorymanagement.enums.PalletStatus;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Getter @Setter @ToString  @AllArgsConstructor @NoArgsConstructor
 @Entity
 @Table(name = "pallets")
 public class Pallet extends BaseEntity {

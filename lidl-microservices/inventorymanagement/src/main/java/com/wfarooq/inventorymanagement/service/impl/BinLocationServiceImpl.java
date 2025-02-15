@@ -4,6 +4,7 @@ import com.wfarooq.inventorymanagement.dto.request.BinLocationRequest;
 import com.wfarooq.inventorymanagement.dto.response.BinLocationResponse;
 import com.wfarooq.inventorymanagement.entity.BinLocation;
 import com.wfarooq.inventorymanagement.exception.AlreadyExistsException;
+import com.wfarooq.inventorymanagement.exception.ResourceNotFoundException;
 import com.wfarooq.inventorymanagement.mapper.BinLocationMapper;
 import com.wfarooq.inventorymanagement.repository.BinLocationRepository;
 import com.wfarooq.inventorymanagement.service.IBinLocationService;
@@ -47,5 +48,11 @@ public class BinLocationServiceImpl implements IBinLocationService {
     public List<BinLocationResponse> fetchAllBinsByAisle(String aisle) {
         List<BinLocation> allBinLocationsInThatAisle = binLocationRepository.findByAisleNumber(aisle);
         return allBinLocationsInThatAisle.stream().map(bin -> BinLocationMapper.mapBinLocationToBinLocationResponse(bin, new BinLocationResponse())).toList();
+    }
+
+    @Override
+    public BinLocation fetchBinByFullLocation(String fullLocation) {
+        BinLocation bin = binLocationRepository.findByFullLocation(fullLocation).orElseThrow(() -> new ResourceNotFoundException("Bin", "fullLocation", fullLocation));
+        return bin;
     }
 }

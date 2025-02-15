@@ -25,4 +25,6 @@ public interface IBinLocationService {
      * @return all bins that belong to that aisle
      */
     List<BinLocationResponse> fetchAllBinsByAisle (String aisle);
+
+    BinLocation fetchBinByFullLocation (String fullLocation);
 }
