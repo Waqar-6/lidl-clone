@@ -2,10 +2,12 @@ package com.wfarooq.inventorymanagement.entity;
 
 import com.wfarooq.inventorymanagement.enums.ZoneType;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@Getter @Setter @ToString @AllArgsConstructor @NoArgsConstructor
 @Entity
 @Table(name = "bin_locations")
 public class BinLocation extends BaseEntity {
