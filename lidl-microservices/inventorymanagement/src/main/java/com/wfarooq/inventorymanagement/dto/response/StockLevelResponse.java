@@ -1,6 +1,5 @@
 package com.wfarooq.inventorymanagement.dto.response;
 
-import com.wfarooq.inventorymanagement.enums.PalletStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,15 +9,15 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PalletResponse {
-    private String huNumber;
+public class StockLevelResponse {
     private String productSku;
     private String productName;
+    private Integer totalPallets;
     private Integer totalCases;
-    private LocalDateTime expiryDate;
-    private Integer remainingCases;
-    private String currentLocation;
-    private PalletStatus status;
+    private Integer reservedCases;
+    private Integer minimumCases;
+    private Integer reorderPoint;
+    private Boolean needsReorder;  // Calculated field
     
     // Audit fields
     private LocalDateTime createdAt;

@@ -13,6 +13,7 @@ public final class PalletMapper {
     public static Pallet mapPalletRequestToPallet(PalletRequest request, Pallet pallet) {
         pallet.setHuNumber(request.getHuNumber());
         pallet.setTotalCases(request.getTotalCases());
+        pallet.setExpiryDate(request.getExpiryDate());
         pallet.setRemainingCases(request.getTotalCases());
         pallet.setStatus(request.getStatus());
         pallet.setReceivedAt(LocalDateTime.now());
@@ -24,6 +25,7 @@ public final class PalletMapper {
         response.setProductSku(pallet.getProduct().getSku());
         response.setProductName(pallet.getProduct().getName());
         response.setTotalCases(pallet.getTotalCases());
+        response.setExpiryDate(pallet.getExpiryDate());
         response.setRemainingCases(pallet.getRemainingCases());
         response.setCurrentLocation(pallet.getCurrentLocation().getFullLocation());
         response.setStatus(pallet.getStatus());

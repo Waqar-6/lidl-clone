@@ -1,9 +1,11 @@
 package com.wfarooq.inventorymanagement.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
-
+@Getter @Setter @ToString @AllArgsConstructor @NoArgsConstructor
 @Entity
 @Table(name = "stock_levels")
 public class StockLevel extends BaseEntity {
@@ -14,6 +16,7 @@ public class StockLevel extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
     
     private Integer totalPallets;
     private Integer totalCases;

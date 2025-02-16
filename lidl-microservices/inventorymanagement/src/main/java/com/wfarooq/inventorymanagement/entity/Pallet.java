@@ -20,6 +20,7 @@ public class Pallet extends BaseEntity {
     private Integer totalCases;     // Initial cases on pallet
     private Integer remainingCases; // Current cases left
     private LocalDateTime receivedAt;
+    private LocalDateTime expiryDate;
     
     @Enumerated(EnumType.STRING)
     private PalletStatus status;    // RECEIVED, IN_STORAGE, PICKING, EMPTY
@@ -27,6 +28,10 @@ public class Pallet extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "stock_level_id")
+    private StockLevel stockLevel;
     
     @ManyToOne
     @JoinColumn(name = "bin_location_id")
