@@ -17,7 +17,7 @@ public interface IBinLocationService {
      *
      * @return list of empty bin locations
      */
-    List<BinLocationResponse>  fetchAllEmptyBinLocations();
+    List<BinLocationResponse>  fetchAllBinLocations();
 
     /**
      *
@@ -25,6 +25,8 @@ public interface IBinLocationService {
      * @return all bins that belong to that aisle
      */
     List<BinLocationResponse> fetchAllBinsByAisle (String aisle);
+
+    List<BinLocationResponse> fetchAllEmptyBinLocations();
 
     BinLocation fetchBinByFullLocation (String fullLocation);
 }

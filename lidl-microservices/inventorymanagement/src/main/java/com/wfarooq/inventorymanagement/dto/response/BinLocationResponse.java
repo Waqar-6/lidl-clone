@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data @NoArgsConstructor @AllArgsConstructor
 public class BinLocationResponse {
@@ -15,6 +16,7 @@ public class BinLocationResponse {
     private Integer maxPallets;
     private ZoneType zone;
     private Integer currentPallets;
+    List<PalletResponse> pallets;
     
     // Audit fields
     private LocalDateTime createdAt;

@@ -2,10 +2,12 @@ package com.wfarooq.inventorymanagement.service.impl;
 
 import com.wfarooq.inventorymanagement.dto.request.BinLocationRequest;
 import com.wfarooq.inventorymanagement.dto.response.BinLocationResponse;
+import com.wfarooq.inventorymanagement.dto.response.PalletResponse;
 import com.wfarooq.inventorymanagement.entity.BinLocation;
 import com.wfarooq.inventorymanagement.exception.AlreadyExistsException;
 import com.wfarooq.inventorymanagement.exception.ResourceNotFoundException;
 import com.wfarooq.inventorymanagement.mapper.BinLocationMapper;
+import com.wfarooq.inventorymanagement.mapper.PalletMapper;
 import com.wfarooq.inventorymanagement.repository.BinLocationRepository;
 import com.wfarooq.inventorymanagement.service.IBinLocationService;
 import lombok.AllArgsConstructor;
@@ -35,9 +37,14 @@ public class BinLocationServiceImpl implements IBinLocationService {
      * @return list of empty bin locations
      */
     @Override
-    public List<BinLocationResponse> fetchAllEmptyBinLocations() {
+    public List<BinLocationResponse> fetchAllBinLocations() {
         List<BinLocation> binLocations = binLocationRepository.findAll();
-        return binLocations.stream().map(bin -> BinLocationMapper.mapBinLocationToBinLocationResponse(bin, new BinLocationResponse())).toList();
+        return binLocations.stream().map(bin -> {
+            List<PalletResponse> palletResponses = bin.getPallets().stream().map(pallet -> PalletMapper.mapPalletToPalletResponse(pallet, new PalletResponse())).toList();
+            BinLocationResponse response = BinLocationMapper.mapBinLocationToBinLocationResponse(bin, new BinLocationResponse());
+            response.setPallets(palletResponses);
+            return response;
+        }).toList();
     }
 
     /**
@@ -48,6 +55,13 @@ public class BinLocationServiceImpl implements IBinLocationService {
     public List<BinLocationResponse> fetchAllBinsByAisle(String aisle) {
         List<BinLocation> allBinLocationsInThatAisle = binLocationRepository.findByAisleNumber(aisle);
         return allBinLocationsInThatAisle.stream().map(bin -> BinLocationMapper.mapBinLocationToBinLocationResponse(bin, new BinLocationResponse())).toList();
+    }
+
+    @Override
+    public List<BinLocationResponse> fetchAllEmptyBinLocations() {
+        List<BinLocation> allEmptyBinLocations = binLocationRepository.findByPalletsIsNullOrPalletsIsEmpty();
+        return allEmptyBinLocations.stream().map(bin -> BinLocationMapper.mapBinLocationToBinLocationResponse(bin, new BinLocationResponse())).toList();
+
     }
 
     @Override

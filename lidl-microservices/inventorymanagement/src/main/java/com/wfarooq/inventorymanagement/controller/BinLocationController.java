@@ -27,9 +27,15 @@ public class BinLocationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(BinLocationConstants.MESSAGE_201, StatusConstants.STATUS_201));
     }
 
+    @GetMapping("/bins")
+    public ResponseEntity<List<BinLocationResponse>> getAllBinLocations() {
+        List<BinLocationResponse> emptyBins = binLocationService.fetchAllBinLocations();
+        return ResponseEntity.status(HttpStatus.OK).body(emptyBins);
+    }
+
     @GetMapping("/emptyBins")
-    public ResponseEntity<List<BinLocationResponse>> getAllEmptyBinLocations () {
-        List<BinLocationResponse> emptyBins = binLocationService.fetchAllEmptyBinLocations();
+    public ResponseEntity<List<BinLocationResponse>> getEmptyBinLocations() {
+        List<BinLocationResponse> emptyBins = binLocationService.fetchAllBinLocations();
         return ResponseEntity.status(HttpStatus.OK).body(emptyBins);
     }
 

@@ -31,4 +31,10 @@ public class PalletController {
         List<PalletResponse> pallets = palletService.fetchAllPallets();
         return ResponseEntity.status(HttpStatus.OK).body(pallets);
     }
+
+    @GetMapping("/{huNumber}")
+    public ResponseEntity<PalletResponse> getPalletByHuNumber (@PathVariable("huNumber") String huNumber) {
+        PalletResponse pallet = palletService.fetchPalletByHuNumber(huNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(pallet);
+    }
 }
