@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,5 +26,11 @@ public class StockLevelController {
     public ResponseEntity<List<StockLevelResponse>> getStockLevels() {
         List<StockLevelResponse> stockList = stockLevelService.fetchAllStockLevels();
         return ResponseEntity.status(HttpStatus.OK).body(stockList);
+    }
+
+    @GetMapping("/{productSku}")
+    public ResponseEntity<StockLevelResponse> getStockLevelByProductSku(@PathVariable("productSku") String productSku) {
+        StockLevelResponse res = stockLevelService.fetchStockLevelByProductSku(productSku);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 }

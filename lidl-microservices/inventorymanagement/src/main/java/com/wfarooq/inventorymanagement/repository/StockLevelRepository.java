@@ -13,7 +13,6 @@ public interface StockLevelRepository extends JpaRepository<StockLevel, UUID> {
     
 
     Optional<StockLevel> findByProduct_Sku(String productSku);
-    
 
     List<StockLevel> findByReservedCasesGreaterThan(Integer reservedCases);
 }
