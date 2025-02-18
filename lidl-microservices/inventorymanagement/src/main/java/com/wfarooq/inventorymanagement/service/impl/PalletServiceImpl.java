@@ -1,23 +1,21 @@
 package com.wfarooq.inventorymanagement.service.impl;
 
 import com.wfarooq.inventorymanagement.dto.request.PalletRequest;
+import com.wfarooq.inventorymanagement.dto.request.StockMovementRequest;
 import com.wfarooq.inventorymanagement.dto.response.PalletResponse;
-import com.wfarooq.inventorymanagement.entity.BinLocation;
-import com.wfarooq.inventorymanagement.entity.Pallet;
-import com.wfarooq.inventorymanagement.entity.Product;
-import com.wfarooq.inventorymanagement.entity.StockLevel;
+import com.wfarooq.inventorymanagement.entity.*;
+import com.wfarooq.inventorymanagement.enums.MovementType;
 import com.wfarooq.inventorymanagement.exception.AlreadyExistsException;
 import com.wfarooq.inventorymanagement.exception.ResourceNotFoundException;
 import com.wfarooq.inventorymanagement.mapper.PalletMapper;
-import com.wfarooq.inventorymanagement.repository.BinLocationRepository;
-import com.wfarooq.inventorymanagement.repository.PalletRepository;
-import com.wfarooq.inventorymanagement.repository.ProductRepository;
-import com.wfarooq.inventorymanagement.repository.StockLevelRepository;
+import com.wfarooq.inventorymanagement.repository.*;
 import com.wfarooq.inventorymanagement.service.IPalletService;
+import com.wfarooq.inventorymanagement.service.IStockMovementService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,6 +26,8 @@ public class PalletServiceImpl implements IPalletService {
     private ProductRepository productRepository;
     private BinLocationRepository binLocationRepository;
     private StockLevelRepository stockLevelRepository;
+    private IStockMovementService stockMovementService;
+
 
 
     /**
@@ -112,10 +112,17 @@ public class PalletServiceImpl implements IPalletService {
      */
     @Override
     public void movePalletToLocation(String huNumber, String newLocation) {
+        StockMovementRequest stockMovementRequest = new StockMovementRequest();
         Pallet pallet = palletRepository.findByHuNumber(huNumber).orElseThrow(() -> new ResourceNotFoundException("Pallet", "huNumber", huNumber));
+        stockMovementRequest.setSourceLocation(pallet.getCurrentLocation().getFullLocation());
+        stockMovementRequest.setPalletHuNumber(pallet.getHuNumber());
+        stockMovementRequest.setProductSku(pallet.getProduct().getSku());
+        stockMovementRequest.setMovementType(MovementType.TRANSFER);
         BinLocation binLocation = binLocationRepository.findByFullLocation(newLocation).orElseThrow(() -> new ResourceNotFoundException("BinLocation", "fullLocation", newLocation));
         pallet.setCurrentLocation(binLocation);
+        stockMovementRequest.setDestinationLocation(pallet.getCurrentLocation().getFullLocation());
         palletRepository.save(pallet);
+        stockMovementService.logStockMovement(stockMovementRequest);
     }
 
     /**

@@ -37,4 +37,13 @@ public class PalletController {
         PalletResponse pallet = palletService.fetchPalletByHuNumber(huNumber);
         return ResponseEntity.status(HttpStatus.OK).body(pallet);
     }
+
+    @PutMapping("/{huNumber}/move")
+    public ResponseEntity<String> movePallet(
+            @PathVariable String huNumber,
+            @RequestParam String newLocation) {
+
+        palletService.movePalletToLocation(huNumber, newLocation);
+        return ResponseEntity.ok("Pallet moved successfully.");
+    }
 }
