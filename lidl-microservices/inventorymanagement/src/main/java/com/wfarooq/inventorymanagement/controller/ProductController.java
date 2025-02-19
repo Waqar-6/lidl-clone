@@ -51,7 +51,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productResponse);
     }
 
-    @PutMapping("/update/sku")
+    @PutMapping("/sku")
     public ResponseEntity<ResponseDto> updateProductBySku (@RequestBody ProductRequest request, @RequestParam String sku) {
         boolean isUpdated = productService.updateProductBySku(request, sku);
         return isUpdated ? ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(ProductConstants.MESSAGE_200_UPDATE, StatusConstants.STATUS_200)) :
@@ -66,9 +66,6 @@ public class ProductController {
                 :
                 ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseDto(ProductConstants.MESSAGE_417_DELETE, StatusConstants.STATUS_417));
     }
-
-
-
 
 
 }

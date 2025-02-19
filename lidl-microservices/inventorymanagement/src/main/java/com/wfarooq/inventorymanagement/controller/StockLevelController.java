@@ -1,8 +1,8 @@
 package com.wfarooq.inventorymanagement.controller;
 
-import com.wfarooq.inventorymanagement.dto.ResponseDto;
+
 import com.wfarooq.inventorymanagement.dto.response.StockLevelResponse;
-import com.wfarooq.inventorymanagement.repository.StockLevelRepository;
+
 import com.wfarooq.inventorymanagement.service.IStockLevelService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
