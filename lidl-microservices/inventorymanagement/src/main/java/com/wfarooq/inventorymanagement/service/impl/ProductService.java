@@ -24,7 +24,7 @@ public class ProductService implements IProductService {
     @Override
     public void createProduct(ProductRequest request) {
         if (productRepository.existsByBarcode(request.getBarcode())) throw new AlreadyExistsException("Product", "barcode", request.getBarcode());
-        if (productRepository.existsByBarcode(request.getBarcode())) throw new AlreadyExistsException("Product", "barcode", request.getBarcode());
+        if (productRepository.existsBySku(request.getSku())) throw new AlreadyExistsException("Product", "barcode", request.getSku());
         Product newProduct = ProductMapper.mapProductRequestToProduct(request, new Product());
         productRepository.save(newProduct);
     }
