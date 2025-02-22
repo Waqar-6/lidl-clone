@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -116,8 +117,8 @@ public class ProductServiceImplTest {
     @Test
     void testFetchAllProducts_ShouldReturnListOfProductResponses() {
         List<Product> products = Arrays.asList(
-                createTestProduct("TEST-SKU-001", "Bananas", "5029123456789"),
-                createTestProduct("TEST-SKU-002", "Apples", "5029123456790")
+                createTestProduct("TEST-SKU-001", "Bananas", "5029123456789", "CHILLER"),
+                createTestProduct("TEST-SKU-002", "Apples", "5029123456790", "FRUIT&VEG")
         );
 
         when(productRepository.findAll()).thenReturn(products);
@@ -135,7 +136,7 @@ public class ProductServiceImplTest {
     @DisplayName(value = "Fetch product by SKU should return ProductResponse")
     @Test
     void testFetchProductBySku_whenGivenProductSku_shouldReturnProductResponse() {
-        Product product = createTestProduct("TEST-SKU-001", "Bananas", "5029123456789");
+        Product product = createTestProduct("TEST-SKU-001", "Bananas", "5029123456789", "FRUIT&VEG");
 
         when(productRepository.findBySku("TEST-SKU-001")).thenReturn(Optional.of(product));
 
@@ -147,22 +148,44 @@ public class ProductServiceImplTest {
         assertEquals("Bananas", productResponse.getName());
     }
 
-    @DisplayName(value = "Fetch product by SKU should throw ResourceNotFoundException")
+    @DisplayName(value = "Fetch product by SKU should throw ResourceNotFoundException when not exist")
     @Test
     void testFetchProductBySku_whenProductNotFound_shouldThrowResourceNotFoundException() {
         when(productRepository.findBySku("TEST-SKU-001")).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> productService.fetchProductBySku("TEST-SKU-001"));
     }
 
-   
+    @DisplayName(value = "fetch product based on department")
+    @Test
+    void testFetchProductByDepartment_whenGivenDepartment_shouldReturnProductResponse() {
+        List<Product> products = Arrays.asList(
+                createTestProduct("TEST-SKU-001", "Bananas", "5029123456789", "CHILLER"),
+                createTestProduct("TEST-SKU-002", "Apples", "5029123456790", "FRUIT&VEG"),
+                createTestProduct("TEST-SKU-003", "Pears", "5029123456783", "CHILLER"),
+                createTestProduct("TEST-SKU-004", "Carrots", "5029123456791", "FRUIT&VEG")
+        );
 
-    private Product createTestProduct(String sku, String name, String barcode) {
+        List<Product> productsInFruitNVeg = products.stream().filter(prod -> prod.getDepartment().equals("FRUIT&VEG")).toList();
+
+        when(productRepository.findByDepartment("FRUIT&VEG")).thenReturn(productsInFruitNVeg);
+
+        List<ProductResponse> result = productService.fetchProductByDepartment("FRUIT&VEG");
+
+        verify(productRepository, times(1)).findByDepartment("FRUIT&VEG");
+        assertNotNull(productsInFruitNVeg);
+        assertEquals(2, productsInFruitNVeg.size());
+        assertEquals("FRUIT&VEG", productsInFruitNVeg.get(0).getDepartment());
+        assertEquals("FRUIT&VEG", productsInFruitNVeg.get(1).getDepartment());
+    }
+
+
+    private Product createTestProduct(String sku, String name, String barcode, String department) {
         Product product = new Product();
-        product.setId(UUID.randomUUID());  // Add UUID
+        product.setId(UUID.randomUUID());
         product.setSku(sku);
         product.setName(name);
         product.setBarcode(barcode);
-        product.setDepartment("FRUIT&VEG");
+        product.setDepartment(department);
         product.setCategory("FRUIT");
         product.setBasePrice(new BigDecimal("1.99"));
         product.setUnit("CASE");
