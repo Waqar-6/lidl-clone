@@ -42,6 +42,8 @@ public class OrderServiceImpl implements IOrderService {
                 }).toList();
         newOrder.setItems(orderItems);
 
+        orderRepository.save(newOrder);
+
         return newOrder.getOrderNumber();
     }
 
