@@ -1,9 +1,14 @@
 package com.wfarooq.orderservice.entity;
 
+import com.wfarooq.orderservice.enums.OrderItemStatus;
 import jakarta.persistence.*;
+import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
-
+@Getter @Setter @ToString @AllArgsConstructor @NoArgsConstructor
+@Entity
+@Table(name = "order_items")
 public class OrderItem extends BaseEntity{
 
     @Id
@@ -11,19 +16,35 @@ public class OrderItem extends BaseEntity{
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Column(nullable = false)
-    private Long productId;
 
     @Column(nullable = false)
-    private int quantityOrdered;
+    private String productSku;
 
     @Column(nullable = false)
-    private int allocatedStock;
+    private String productName;
+
+    @Column(nullable = false)
+    private Integer quantity;
+
+    @Column(nullable = false)
+    private String unit;
+
+    @Column(nullable = false)
+    private BigDecimal unitPrice;
+
+    @Column(nullable = false)
+    private BigDecimal totalPrice;
+
+    @Column(nullable = false)
+    private String department;
+
+    @Column(nullable = false)
+    private Integer allocatedStock;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderItemStatus status;
+
 }
