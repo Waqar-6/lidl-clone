@@ -1,11 +1,13 @@
 package com.wfarooq.orderservice.service.impl;
 
 import com.wfarooq.orderservice.dto.request.OrderRequest;
+import com.wfarooq.orderservice.dto.response.OrderItemResponse;
 import com.wfarooq.orderservice.dto.response.OrderResponse;
 import com.wfarooq.orderservice.entity.Order;
 import com.wfarooq.orderservice.entity.OrderItem;
 import com.wfarooq.orderservice.enums.OrderItemStatus;
 import com.wfarooq.orderservice.enums.OrderStatus;
+import com.wfarooq.orderservice.exception.ResourceNotFoundException;
 import com.wfarooq.orderservice.mapper.OrderItemMapper;
 import com.wfarooq.orderservice.mapper.OrderMapper;
 import com.wfarooq.orderservice.repository.OrderRepository;
@@ -14,10 +16,12 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 @Service
 @AllArgsConstructor
@@ -42,6 +46,10 @@ public class OrderServiceImpl implements IOrderService {
                 }).toList();
         newOrder.setItems(orderItems);
 
+        newOrder.setTotalPrice(calcOrderTotal(orderItems));
+        newOrder.setStatus(OrderStatus.PENDING);
+        newOrder.setEstimatedDeliveryTime(LocalDateTime.now());
+
         orderRepository.save(newOrder);
 
         return newOrder.getOrderNumber();
@@ -49,12 +57,25 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public OrderResponse fetchOrderByNumber(String orderNumber) {
-        return null;
+        Order order = orderRepository.findByOrderNumber(orderNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "orderNumber", orderNumber));
+        OrderResponse orderResponse = OrderMapper.mapOrderToOrderResponse(order, new OrderResponse());
+        List<OrderItemResponse> items = order.getItems().stream().map(item -> OrderItemMapper.mapOrderItemToOrderItemResponse(item, new OrderItemResponse())).toList();
+        orderResponse.setItems(items);
+        return orderResponse;
     }
 
     @Override
     public List<OrderResponse> fetchAllOrders() {
-        return List.of();
+        List<Order> orders = orderRepository.findAll();
+
+        return orders.stream().map(order -> {
+            OrderResponse orderRes = OrderMapper.mapOrderToOrderResponse(order, new OrderResponse());
+            List<OrderItemResponse> itemRes = order.getItems().stream().map(item -> OrderItemMapper.mapOrderItemToOrderItemResponse(item , new OrderItemResponse())).toList();
+            orderRes.setItems(itemRes);
+            return orderRes;
+        }).toList();
+
     }
 
     @Override
@@ -111,5 +132,11 @@ public class OrderServiceImpl implements IOrderService {
         }
 
         return orderNumber;
+    }
+
+    private BigDecimal calcOrderTotal (List<OrderItem> items) {
+        return items.stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

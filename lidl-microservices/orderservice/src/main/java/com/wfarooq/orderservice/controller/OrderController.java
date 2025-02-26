@@ -4,6 +4,7 @@ import com.wfarooq.orderservice.constants.OrderConstants;
 import com.wfarooq.orderservice.constants.StatusConstants;
 import com.wfarooq.orderservice.dto.ResponseDto;
 import com.wfarooq.orderservice.dto.request.OrderRequest;
+import com.wfarooq.orderservice.dto.response.OrderResponse;
 import com.wfarooq.orderservice.service.IOrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -11,10 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/orders", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -29,5 +29,17 @@ public class OrderController {
         String res = orderService.createOrder(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDto(OrderConstants.MESSAGE_201 + " order number: " + res, StatusConstants.STATUS_201));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<OrderResponse>> fetchAllOrders () {
+        List<OrderResponse> allOrders = orderService.fetchAllOrders();
+        return ResponseEntity.status(HttpStatus.OK).body(allOrders);
+    }
+
+    @GetMapping("/{orderNumber}")
+    public ResponseEntity<OrderResponse> fetchOrderByOrderNumber (@PathVariable String orderNumber) {
+        OrderResponse orderResponse = orderService.fetchOrderByNumber(orderNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(orderResponse);
     }
 }

@@ -40,11 +40,10 @@ public class OrderItem extends BaseEntity{
     @Column(nullable = false)
     private String department;
 
-    @Column(nullable = false)
+
     private Integer allocatedStock;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private OrderItemStatus status;
 
 }
