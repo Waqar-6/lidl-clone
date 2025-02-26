@@ -119,4 +119,35 @@ public class OrderServiceImplTest {
 
     }
 
+    @Test
+    void testFetchOrdersByStoreNumber_whenGivenStoreNumber_ShouldReturnListOfOrderResponse () {
+        String orderNumber = "ORD-20250226-71740";
+        String storeNumber = "STORE-123";
+        Order savedOrder = new Order();
+        savedOrder.setId(UUID.randomUUID());
+        savedOrder.setStoreNumber(storeNumber);
+        savedOrder.setOrderNumber(orderNumber);
+        savedOrder.setRequestedDeliveryTime(LocalDateTime.now().plusDays(1));
+
+        List<OrderItem> items = new ArrayList<>();
+        OrderItem item = new OrderItem();
+        item.setProductSku("PRD-123");
+        item.setProductName("Test Product");
+        item.setQuantity(5);
+        item.setUnit("CASE");
+        item.setUnitPrice(new BigDecimal("10.00"));
+        item.setTotalPrice(new BigDecimal("50.00"));
+        item.setDepartment("FRUIT&VEG");
+        items.add(item);
+
+        savedOrder.setItems(items);
+
+        when(orderRepository.findByStoreNumber(storeNumber)).thenReturn(List.of(savedOrder));
+
+        List<OrderResponse> orders = orderService.fetchOrdersByStore(storeNumber);
+
+        assertNotNull(orders);
+        assertEquals(1, orders.size());
+    }
+
 }

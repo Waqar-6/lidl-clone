@@ -37,9 +37,17 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(allOrders);
     }
 
-    @GetMapping("/{orderNumber}")
+    @GetMapping("/orderNumber/{orderNumber}")
     public ResponseEntity<OrderResponse> fetchOrderByOrderNumber (@PathVariable String orderNumber) {
         OrderResponse orderResponse = orderService.fetchOrderByNumber(orderNumber);
         return ResponseEntity.status(HttpStatus.OK).body(orderResponse);
     }
+
+    @GetMapping("/storeNumber/{storeNumber}")
+    public ResponseEntity<List<OrderResponse>> fetchOrdersByStoreNumber (@PathVariable String storeNumber) {
+        List<OrderResponse> orders = orderService.fetchOrdersByStore(storeNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(orders);
+    }
+
+
 }

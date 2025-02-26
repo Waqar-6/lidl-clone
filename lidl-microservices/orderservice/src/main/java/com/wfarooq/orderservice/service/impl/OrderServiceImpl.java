@@ -80,7 +80,14 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public List<OrderResponse> fetchOrdersByStore(String storeNumber) {
-        return List.of();
+        List<Order> orders = orderRepository.findByStoreNumber(storeNumber);
+
+        return orders.stream().map(order -> {
+            OrderResponse orderResponse = OrderMapper.mapOrderToOrderResponse(order, new OrderResponse());
+            List<OrderItemResponse> items = order.getItems().stream().map(item -> OrderItemMapper.mapOrderItemToOrderItemResponse(item, new OrderItemResponse())).toList();
+            orderResponse.setItems(items);
+            return orderResponse;
+        }).toList();
     }
 
     @Override
