@@ -97,12 +97,21 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public List<OrderResponse> fetchOrdersByStatus(OrderStatus status) {
-        return List.of();
+        List<Order> orders = orderRepository.findByStatus(status);
+
+        return orders.stream().map(order -> {
+            OrderResponse orderResponse = OrderMapper.mapOrderToOrderResponse(order, new OrderResponse());
+            List<OrderItemResponse> items = order.getItems().stream().map(item -> OrderItemMapper.mapOrderItemToOrderItemResponse(item, new OrderItemResponse())).toList();
+            orderResponse.setItems(items);
+            return orderResponse;
+        }).toList();
     }
 
     @Override
     public void updateOrderStatus(String orderNumber, OrderStatus status) {
-
+        Order order = orderRepository.findByOrderNumber(orderNumber).orElseThrow(() ->  new ResourceNotFoundException("Order", "orderNumber", orderNumber));
+        order.setStatus(status);
+        orderRepository.save(order);
     }
 
     @Override
@@ -117,6 +126,9 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public void updateDeliveryTime(String orderNumber, LocalDateTime newDeliveryTime) {
+       Order order =  orderRepository.findByOrderNumber(orderNumber).orElseThrow(() -> new ResourceNotFoundException("Order", "orderNumber", orderNumber));
+       order.setEstimatedDeliveryTime(newDeliveryTime);
+       orderRepository.save(order);
 
     }
 

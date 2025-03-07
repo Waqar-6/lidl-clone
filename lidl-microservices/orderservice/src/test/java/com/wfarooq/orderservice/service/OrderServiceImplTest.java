@@ -5,6 +5,7 @@ import com.wfarooq.orderservice.dto.request.OrderRequest;
 import com.wfarooq.orderservice.dto.response.OrderResponse;
 import com.wfarooq.orderservice.entity.Order;
 import com.wfarooq.orderservice.entity.OrderItem;
+import com.wfarooq.orderservice.enums.OrderStatus;
 import com.wfarooq.orderservice.repository.OrderRepository;
 import com.wfarooq.orderservice.service.impl.OrderServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
@@ -149,5 +150,6 @@ public class OrderServiceImplTest {
         assertNotNull(orders);
         assertEquals(1, orders.size());
     }
+
 
 }
